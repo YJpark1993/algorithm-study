@@ -10,7 +10,7 @@ vector<string> result;
 
 void Check(string _input, array<int, 20> brac, int i)
 {
-	if (i < 10 && brac[i] >= 0)
+	if (i < 20 && brac[i] >= 0)
 	{
 		_input.replace(brac[i], 1, "a");
 		_input.replace(brac[i + 1], 1, "a");
@@ -18,9 +18,13 @@ void Check(string _input, array<int, 20> brac, int i)
 		string _temp = _input;
 		_temp.erase(remove(_temp.begin(), _temp.end(), 'a'), _temp.end());
 
-		//if (find(result.begin(), result.end(), _temp) == result.end())
+		if (find(result.begin(), result.end(), _temp) == result.end())
 			result.push_back(_temp);
-		Check(_input, brac, i + 2);
+
+		for (int j = i + 2; j < 20; j += 2)
+		{
+			Check(_input, brac, j);
+		}
 	}
 }
 
