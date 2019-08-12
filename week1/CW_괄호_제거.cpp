@@ -2,53 +2,43 @@
 #include <stack>
 #include <string>
 #include <vector>
-#include <cstring>
 #include <algorithm>
 
 using namespace std;
 
 string oper;
-int flag[200];
 int bracket[10][2];
 vector<string> results;
 
-string print_str(int size)
+string get_oper(const string oper)
 {
     string result = "";
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < int(oper.size()); i++)
     {
-        if (flag[i] == 1)
+        if (oper[i] == 'a')
         {
             continue;
         }
-        //cout << oper[i];
         result += oper[i];
     }
-    //cout << endl;
     return result;
 }
 
-void print_recursive(int size, int index, int depth, int start)
+void print_recursive(string oper, int index, int start)
 {
-    memset(flag, 0, sizeof(flag));
-    if (depth <= 0)
-    {
-        return;
-    }
     if (start >= index)
     {
         return;
     }
+    oper[bracket[start][0]] = 'a';
+    oper[bracket[start][1]] = 'a';
 
-    for (int i = 0; i < index; i++)
+    results.push_back(get_oper(oper));
+
+    for (int i = 1; i < index; i++)
     {
-        print_recursive(size, index, depth - 1, start + i);
+        print_recursive(oper, index, start + i);
     }
-
-    flag[bracket[start][0]] = 1;
-    flag[bracket[start][1]] = 1;
-    
-    results.push_back(print_str(size));
 }
 
 int main()
@@ -75,7 +65,10 @@ int main()
         }
     }
 
-    print_recursive(size, index, index, 0);
+    for (int i = 0; i < index; i++)
+    {
+        print_recursive(oper, index, i);
+    }
     sort(results.begin(), results.end());
 
     for (size_t i = 0; i < results.size(); i++)
