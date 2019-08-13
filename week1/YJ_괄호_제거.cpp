@@ -12,7 +12,6 @@ stack<int> stk;
 typedef pair<int, int> Brk;
 vector<Brk> vec;
 vector<string> result;
-bitset<200> bit;
 bitset<200> prevBit;
 string str;
 
