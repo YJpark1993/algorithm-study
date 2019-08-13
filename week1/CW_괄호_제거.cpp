@@ -35,7 +35,7 @@ void print_recursive(string oper, int index, int start)
 
     results.push_back(get_oper(oper));
 
-    for (int i = 1; i < index; i++)
+    for (int i = 1; i < index - start; i++)
     {
         print_recursive(oper, index, start + i);
     }
