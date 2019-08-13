@@ -2,13 +2,14 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <set>
 #include <algorithm>
 
 using namespace std;
 
 string oper;
 int bracket[10][2];
-vector<string> results;
+set<string> results;
 
 string get_oper(const string oper)
 {
@@ -33,7 +34,7 @@ void print_recursive(string oper, int index, int start)
     oper[bracket[start][0]] = 'a';
     oper[bracket[start][1]] = 'a';
 
-    results.push_back(get_oper(oper));
+    results.insert(get_oper(oper));
 
     for (int i = 1; i < index - start; i++)
     {
@@ -69,11 +70,11 @@ int main()
     {
         print_recursive(oper, index, i);
     }
-    sort(results.begin(), results.end());
+    //sort(results.begin(), results.end());
 
-    for (size_t i = 0; i < results.size(); i++)
+    for (auto it = results.begin(); it != results.end(); it++)
     {
-      cout << results[i] << endl;
+      cout << *it << endl;
     }
 
     return 0;
