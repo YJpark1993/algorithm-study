@@ -12,7 +12,7 @@ stack<int> stk;
 typedef pair<int, int> Brk;
 vector<Brk> vec;
 vector<string> result;
-bitset<200> prevBit;
+bitset<200> bit;
 string str;
 
 void insertResult(bitset<200> bit) {
