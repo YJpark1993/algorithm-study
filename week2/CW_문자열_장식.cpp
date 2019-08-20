@@ -2,27 +2,34 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
 int n;
 vector<string> p;
-char s[500000];
+string s;
 
-string get_str(const char* start, int size)
+int s_min = std::numeric_limits<int>::max();
+int s_max = 0;
+
+void find_min_max(string str)
 {
-    string result = "";
-    for (int i = 0; i < size; i++)
+    int min = s.find(str);
+    if (min < s_min)
     {
-        result += start[i];
+        s_min = min;
     }
 
-    return result;
+    int max = s.rfind(str);
+    if (max > s_max)
+    {
+        s_max = max;
+    }
 }
 
 int main()
 {
-
     string temp;
     int tnum;
     int length = 0;
@@ -41,26 +48,49 @@ int main()
     cin >> tnum >> s;
     int s_length = tnum;
 
+    sort(p.begin(), p.end(), [](string x, string y) {
+                return x > y;
+            });
+
+    for (auto it = p.begin(); it != p.end(); ++it)
+    {
+        find_min_max(*it);
+    }
+
     string dest;
     bool flag = false;
+    int min_size, max_size;
     for (int size = length; size <= s_length; size++)
     {
-        for (int cur = 0; cur <= s_length - size; cur++)
+        dest = s.substr(s_min, size);
+        for (size_t i = 0; i < p.size(); i++)
         {
-            dest = get_str(s + cur, size);
-            for (size_t i = 0; i < p.size(); i++)
+            if (dest.find(p[i]) == string::npos)
             {
-                if (dest.find(p[i]) == string::npos)
-                {
-                    flag = false;
-                    break;
-                }
-                flag = true;
-            }
-            if (flag)
-            {
+                flag = false;
                 break;
             }
+            flag = true;
+            min_size = size;
+        }
+        if (flag)
+        {
+            break;
+        }
+    }
+    int i = 0;
+    for (int size = length; size <= s_length; size++, i++)
+    {
+        dest = s.substr(s_max - i, size);
+        for (size_t i = 0; i < p.size(); i++)
+        {
+            if (dest.find(p[i]) == string::npos)
+            {
+                flag = false;
+                break;
+            }
+            flag = true;
+            max_size = size;
         }
         if (flag)
         {
@@ -68,7 +98,9 @@ int main()
         }
     }
 
-    cout << dest.size() << endl;
+    int result = min_size > max_size ? max_size : min_size;
+
+    cout << result << endl;
 
     return 0;
 }
