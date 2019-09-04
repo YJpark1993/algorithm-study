@@ -34,8 +34,6 @@ void print_recursive(string oper, int index, int start)
     oper[bracket[start][0]] = 'a';
     oper[bracket[start][1]] = 'a';
 
-    results.insert(get_oper(oper));
-
     for (int i = 1; i < index - start; i++)
     {
         print_recursive(oper, index, start + i);

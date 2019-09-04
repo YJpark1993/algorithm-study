@@ -5,65 +5,132 @@
 #include <algorithm>
 
 using namespace std;
-string input;
-vector<string> result;
+string check_str;
+vector<string> strs; // input strings
+int str_in;          // input string counts
+int left, right;     // search var
 
-void Check(string _input, array<int, 20> brac, int i)
+int search_lr(int left, int right, int search_idx);
+
+bool cmp_length(const string &p1, const string &p2)
 {
-	if (i < 20 && brac[i] >= 0)
-	{
-		_input.replace(brac[i], 1, "a");
-		_input.replace(brac[i + 1], 1, "a");
+    if (p1.length() < p2.length())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
 
-		string _temp = _input;
-		_temp.erase(remove(_temp.begin(), _temp.end(), 'a'), _temp.end());
+int search_left(int left, int right, int search_idx)
+{
+    if (search_idx < strs.size())
+    {
+        string search_str = strs[search_idx];
+        if (left == 0)
+            return check_str.length();
+        else
+        {
+            int _left = check_str.rfind(search_str, left - 1);
+            if (_left == -1)
+                return check_str.length();
+            else
+                return search_lr(_left, right, search_idx + 1);
+        }
+    }
+    else
+        return right - left;
+    return check_str.length();
+}
+int search_right(int left, int right, int search_idx)
+{
+    if (search_idx < strs.size())
+    {
+        string search_str = strs[search_idx];
+        if (right == check_str.length())
+            return check_str.length();
+        else
+        {
+            int _right = check_str.find(search_str, left);
+            if (_right == -1)
+                return check_str.length();
+            else
+            {
+                _right = _right + search_str.length();
+                _right = max(_right, right);
+                return search_lr(left, _right, search_idx + 1);
+            }
+        }
+    }
+    else
+        return right - left;
+    return check_str.length();
+}
 
-		if (find(result.begin(), result.end(), _temp) == result.end())
-			result.push_back(_temp);
+int search_lr(int left, int right, int search_idx)
+{
+    int lcount = search_left(left, right, search_idx);
+    int rcount = search_right(left, right, search_idx);
+    return min(lcount, rcount);
+}
 
-		for (int j = i + 2; j < 20; j += 2)
-		{
-			Check(_input, brac, j);
-		}
-	}
+int search()
+{
+    string search_str = strs[0];
+    int pos = check_str.find(search_str, 0);
+    if (pos == -1)
+        return check_str.length();
+    int _left = pos;
+    int _right = pos + search_str.length();
+    int result = search_lr(_left, _right, 1);
+
+    while (pos != string::npos)
+    {
+        pos = check_str.find(search_str, pos + 1);
+        if (pos != -1)
+        {
+            _left = pos;
+            _right = pos + search_str.length();
+            result = min(result, search_lr(_left, _right, 1));
+        }
+    }
+    return result;
 }
 
 int main()
 {
-	cin >> input;
+    cin >> str_in;
+    for (int i = 0; i < str_in; i++)
+    {
+        string _temp;
+        int _temp_i;
+        cin >> _temp_i >> _temp;
+        bool in_check = true;
 
-	array<int, 20> brac;
-	array<int, 10> depth;
-
-	int depth_cur = 0;
-	int count = 0;
-
-	for (int i = 0; i < input.length(); i++)
-	{
-		if (input[i] == '(')
-		{
-			depth[depth_cur] = i;
-			depth_cur++;
-		}
-		else if (input[i] == ')')
-		{
-			depth_cur--;
-			brac[count] = depth[depth_cur];
-			brac[count + 1] = i;
-			count += 2;
-			depth[depth_cur] = -1;
-		}
-	}
-
-	for (int i = 0; i < 20; i += 2)
-	{
-		Check(input, brac, i);
-	}
-
-	sort(result.begin(), result.end());
-	for (int i = 0; i < result.size(); i++)
-	{
-		cout << result[i] << endl;
-	}
-	return 0;
+        for (int j = 0; j < strs.size(); j++)
+        {
+            string str = strs[j];
+            //cout << str << endl;
+            if (_temp.length() <= str.length() && str.find(_temp) != string::npos)
+            {
+                in_check = false;
+            }
+            if (_temp.length() > str.length() && _temp.find(str) != string::npos)
+            {
+                in_check = false;
+                strs[j] = _temp;
+                //break;
+            }
+        }
+        if (in_check)
+            strs.push_back(_temp);
+    }
+    sort(strs.begin(), strs.end(), cmp_length);
+    int t;
+    cin >> t >> check_str;
+    t = search();
+    cout << t << endl;
+    return 0;
 }

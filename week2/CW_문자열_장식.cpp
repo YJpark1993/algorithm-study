@@ -1,28 +1,44 @@
 #include <iostream>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
 int n;
-vector<string> p;
-char s[500000];
+set<string> p;
+string s;
 
-string get_str(const char* start, int size)
+int s_min = std::numeric_limits<int>::max();
+int s_max = 0;
+
+bool find_min_max(string s, string str)
 {
-    string result = "";
-    for (int i = 0; i < size; i++)
+    int min = s.find(str);
+    int max = s.rfind(str) + str.length();
+
+    if (min < 0)
     {
-        result += start[i];
+        return false;
     }
 
-    return result;
+    if (min < s_min)
+    {
+        s_min = min;
+    }
+
+    if (max > s_max)
+    {
+        s_max = max;
+    }
+
+    return true;
 }
 
 int main()
 {
-
     string temp;
     int tnum;
     int length = 0;
@@ -35,22 +51,28 @@ int main()
         {
             length = tnum;
         }
-        p.push_back(temp);
+        p.insert(temp);
     }
 
     cin >> tnum >> s;
     int s_length = tnum;
 
+    for (auto it = p.begin(); it != p.end(); ++it)
+    {
+        find_min_max(s, *it);
+    }
+
     string dest;
     bool flag = false;
-    for (int size = length; size <= s_length; size++)
+    int size;
+    for (size = length; size <= s_length; size++)
     {
-        for (int cur = 0; cur <= s_length - size; cur++)
+        for (int cur = s_min; cur <= s_max - size; cur++)
         {
-            dest = get_str(s + cur, size);
-            for (size_t i = 0; i < p.size(); i++)
+            dest = s.substr(cur, size);
+            for (auto it = p.begin(); it != p.end(); ++it)
             {
-                if (dest.find(p[i]) == string::npos)
+                if (dest.find(*it) == string::npos)
                 {
                     flag = false;
                     break;
@@ -68,7 +90,7 @@ int main()
         }
     }
 
-    cout << dest.size() << endl;
+    cout << size << endl;
 
     return 0;
 }
