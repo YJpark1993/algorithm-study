@@ -42,14 +42,14 @@ int main() {
     std::cin.sync_with_stdio(false);
 
     int _;
-    cin>>N;
-    for(int i=0; i<N; i++) {
+    cin >> N;
+    for (int i = 0; i < N; i++) {
         string str;
-        cin>>_>>str;
+        cin >> _ >> str;
         strings.push_back(str);
     }
-    cin>>_>>fullString;
+    cin >> _ >> fullString;
     sort(strings.begin(), strings.end(), compare);
     check(0, make_pair(fullString.length(), 0));
-    cout<<RES<<endl;
+    cout << RES << endl;
 }
